@@ -1,0 +1,548 @@
+/* ==========================================================================
+   FINANZASPLAN PRO — DESIGN SYSTEM, RESPONSIVE & ANIMATION ENGINE
+   Skills Applied:
+     - responsive-web-design (Mobile-First, Fluid Layouts, Zero Horizontal Overflow)
+     - web-animations (Purposeful Motion, Transitions, Keyframes, Hardware-Accelerated)
+     - design-motion-principles (Emil Kowalski + Jakub Krehel)
+     - ui-ux-pro-max (WCAG 2.1 AA, 44px Touch Targets, Zero Emojis as Icons)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+:root {
+  /* Motion Tokens (from web-animations skill) */
+  --motion-fast: 140ms;
+  --motion-normal: 220ms;
+  --motion-slow: 360ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Color Tokens */
+  --bg-deep: #06080d;
+  --bg-surface: #0c1017;
+  --bg-card: #121824;
+  --bg-card-hover: #161f30;
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(16, 185, 129, 0.4);
+  --border-accent: rgba(56, 189, 248, 0.3);
+
+  /* Accents */
+  --brand-emerald: #10b981;
+  --brand-mint: #34d399;
+  --brand-cyan: #06b6d4;
+  --brand-indigo: #6366f1;
+  --brand-rose: #f43f5e;
+  --brand-amber: #f59e0b;
+
+  /* Typography */
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Base resets & typography */
+html {
+  font-family: var(--font-body);
+  background-color: var(--bg-deep);
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-display);
+}
+
+.font-numeral {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT PATTERNS (from responsive-web-design skill)
+   ========================================================================== */
+
+/* Fluid container */
+.container-fluid {
+  width: min(100% - 2rem, 80rem);
+  margin-inline: auto;
+}
+
+/* Fluid responsive titles */
+.fluid-title {
+  font-size: clamp(1.4rem, 4vw + 0.5rem, 2.4rem);
+  line-height: 1.15;
+}
+
+.fluid-subtitle {
+  font-size: clamp(0.85rem, 1.5vw + 0.2rem, 1rem);
+  line-height: 1.5;
+}
+
+/* Responsive Adaptive Grids */
+.responsive-grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1.25rem;
+}
+
+/* Table Responsive Handling with Sticky Header & First Column */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+}
+
+/* Sticky first column on mobile scroll */
+@media (max-width: 768px) {
+  .sticky-col-mobile {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: #0c1017 !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Responsive media & images */
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Minimum touch targets for mobile accessibility */
+button, input, select, textarea, .touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Form inputs on mobile: 16px minimum font size avoids iOS auto-zoom */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+@media (min-width: 640px) {
+  input, select, textarea {
+    font-size: 0.875rem !important; /* 14px on desktop */
+  }
+}
+
+/* ==========================================================================
+   ANIMATIONS & MICRO-INTERACTIONS (from web-animations skill)
+   ========================================================================== */
+
+/* Background Grid & Ambient Floating Lights */
+.bg-apex-grid {
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+}
+
+/* Floating ambient light effect */
+.ambient-glow {
+  animation: ambientFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50% { transform: translate(20px, 15px) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-15px, 25px) scale(1.05); opacity: 0.75; }
+}
+
+/* Card hover elevation */
+.apex-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 
+    0px 0px 0px 1px rgba(255, 255, 255, 0.03),
+    0px 4px 12px -2px rgba(0, 0, 0, 0.4),
+    0px 16px 32px -8px rgba(0, 0, 0, 0.6);
+  transition: transform var(--motion-normal) var(--ease-spring), 
+              border-color var(--motion-normal) ease,
+              box-shadow var(--motion-normal) ease;
+}
+
+@media (hover: hover) {
+  .apex-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(52, 211, 153, 0.35);
+    box-shadow: 
+      0px 0px 0px 1px rgba(52, 211, 153, 0.2),
+      0px 8px 24px -4px rgba(0, 0, 0, 0.5),
+      0px 24px 48px -10px rgba(16, 185, 129, 0.12);
+  }
+}
+
+/* Button Tactile Feedback (Emil Kowalski: 0.97 scale on press) */
+button, .btn-tactile {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform var(--motion-fast) var(--ease-spring),
+              background-color var(--motion-fast) ease,
+              box-shadow var(--motion-fast) ease,
+              border-color var(--motion-fast) ease,
+              color var(--motion-fast) ease;
+}
+
+button:active:not(:disabled), .btn-tactile:active:not(:disabled) {
+  transform: scale(0.97) !important;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px var(--brand-emerald);
+}
+
+/* Enter Materialize Animation: Opacity + TranslateY + Blur (Jakub Krehel) */
+.enter-materialize {
+  animation: enterMaterialize var(--motion-slow) var(--ease-spring) forwards;
+}
+
+@keyframes enterMaterialize {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Modal Backdrop & Content Animations */
+.modal-backdrop {
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.modal-backdrop:not(.hidden) {
+  display: flex;
+  opacity: 1;
+  animation: fadeIn 200ms ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content-animate {
+  animation: modalPop 240ms var(--ease-emphasized) forwards;
+}
+
+@keyframes modalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Value update flash animation (triggers when numbers change) */
+.value-flash {
+  animation: valueFlash 400ms var(--ease-standard);
+}
+
+@keyframes valueFlash {
+  0% {
+    color: #34d399;
+    transform: scale(1.06);
+    text-shadow: 0 0 12px rgba(52, 211, 153, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+/* Progress bar dynamic animation with luminous shimmer */
+.progress-bar-animated {
+  position: relative;
+  overflow: hidden;
+  transition: width 650ms var(--ease-emphasized);
+}
+
+.progress-bar-animated::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.35) 50%, 
+    transparent 100%
+  );
+  animation: progressShimmer 2.2s infinite ease-in-out;
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+@keyframes progressShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* Radar Ping Animation for live status indicators */
+@keyframes radarPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.radar-dot {
+  animation: radarPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Card Cascade Waterfall Animation on Tab Entry */
+.tab-content.active .apex-card {
+  animation: cardCascade 300ms var(--ease-spring) backwards;
+}
+.tab-content.active .apex-card:nth-child(1) { animation-delay: 20ms; }
+.tab-content.active .apex-card:nth-child(2) { animation-delay: 45ms; }
+.tab-content.active .apex-card:nth-child(3) { animation-delay: 70ms; }
+.tab-content.active .apex-card:nth-child(4) { animation-delay: 95ms; }
+.tab-content.active .apex-card:nth-child(5) { animation-delay: 120ms; }
+
+@keyframes cardCascade {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Floating Action Button (FAB) breathing animation */
+@keyframes fabBreathe {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px -2px rgba(16, 185, 129, 0.45);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 28px 0px rgba(16, 185, 129, 0.65);
+  }
+}
+
+.fab-breathe {
+  animation: fabBreathe 3s ease-in-out infinite;
+}
+
+/* Optical balance adjustments */
+.icon-align-nudge {
+  margin-right: 0.35rem;
+  transform: translateY(-0.5px);
+}
+
+/* Tab active states with smooth indicator */
+.tab-btn {
+  position: relative;
+  transition: all var(--motion-fast) ease;
+}
+
+.tab-btn.active {
+  background: rgba(30, 41, 59, 0.85) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 0 16px -2px rgba(56, 189, 248, 0.25);
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM APP DOCK (< 768px)
+   ========================================================================== */
+.mobile-bottom-dock {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(8, 12, 19, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.8);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-dock {
+    display: none !important;
+  }
+}
+
+.mobile-dock-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 4px 1px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  position: relative;
+  transition: all var(--motion-fast) var(--ease-spring);
+  min-height: 48px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.mobile-dock-btn:active {
+  transform: scale(0.90) !important;
+}
+
+.mobile-dock-btn .dock-icon-wrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all var(--motion-fast) var(--ease-spring);
+}
+
+.mobile-dock-btn .dock-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+  transition: color var(--motion-fast) ease;
+  line-height: 1;
+}
+
+.mobile-dock-btn.active {
+  color: #ffffff !important;
+}
+
+.mobile-dock-btn.active .dock-icon-wrapper {
+  background: rgba(16, 185, 129, 0.22);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+  transform: translateY(-2px);
+}
+
+.mobile-dock-btn.active .dock-label {
+  color: #34d399 !important;
+  font-weight: 800;
+}
+
+/* Range input high-precision styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: #1e293b;
+  border-radius: 9999px;
+  height: 8px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #22d3ee;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.7);
+  border: 2.5px solid #0f172a;
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+/* Toast container & animations */
+.toast-animate {
+  animation: toastSlideUp 260ms var(--ease-emphasized) forwards;
+}
+
+@keyframes toastSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY: prefers-reduced-motion (MANDATORY)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  
+  .enter-materialize, 
+  .modal-content-animate, 
+  .toast-animate, 
+  .ambient-glow,
+  .progress-bar-animated::after,
+  .radar-dot,
+  .fab-breathe,
+  .tab-content.active .apex-card,
+  .apex-card:hover, 
+  button:active, 
+  .value-flash {
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Hide scrollbar for mobile clean horizontal tab scrolls */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

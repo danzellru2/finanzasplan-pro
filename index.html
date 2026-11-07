@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FinanzasPlan Pro | Control Granular, Animaciones y Diseño Responsive</title>
+  
+  <!-- Distinctive Typography: Plus Jakarta Sans, Outfit, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'system-ui', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          colors: {
+            apex: {
+              deep: '#06080d',
+              surface: '#0c1017',
+              card: '#121824',
+              hover: '#161f30',
+              border: 'rgba(255, 255, 255, 0.08)'
+            },
+            brand: {
+              emerald: '#10b981',
+              mint: '#34d399',
+              cyan: '#06b6d4',
+              indigo: '#6366f1',
+              rose: '#f43f5e',
+              amber: '#f59e0b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Font Awesome Vector Icons (Zero Emojis as icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Design System, Responsive & Animation Engine -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-apex-deep text-slate-100 min-h-screen selection:bg-emerald-500 selection:text-white bg-apex-grid">
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/90 border-b border-slate-800/80 shadow-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
+      
+      <!-- Logo & Brand Badge -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/25 flex items-center justify-center flex-shrink-0">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-emerald-400">
+            <i class="fa-solid fa-gem text-base sm:text-lg"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-heading text-base sm:text-lg font-black tracking-tight text-white whitespace-nowrap">FinanzasPlan <span class="text-emerald-400">Pro</span></h1>
+            <span class="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">Reactivo</span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate max-w-[210px] sm:max-w-none">0 Deudas &bull; 2 Tablets + 1 Celular ($30k)</p>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Tabs (>= 768px) -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner" role="tablist" aria-label="Navegación principal">
+        <button onclick="switchTab('dashboard')" class="tab-btn active touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="true" data-tab="dashboard" id="tab-btn-dashboard">
+          <i class="fa-solid fa-chart-pie icon-align-nudge text-emerald-400"></i> Resumen
+        </button>
+        <button onclick="switchTab('budget')" class="tab-btn touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="false" data-tab="budget" id="tab-btn-budget">
+          <i class="fa-solid fa-sliders icon-align-nudge text-cyan-400"></i> Mi Sueldo & Gastos
+        </button>
+        <button onclick="switchTab('roadmap')" class="tab-btn touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="false" data-tab="roadmap" id="tab-btn-roadmap">
+          <i class="fa-solid fa-route icon-align-nudge text-indigo-400"></i> Hoja de Ruta
+        </button>
+        <button onclick="switchTab('debts')" class="tab-btn touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="false" data-tab="debts" id="tab-btn-debts">
+          <i class="fa-solid fa-fire-flame-curved icon-align-nudge text-rose-400"></i> Deudas
+        </button>
+        <button onclick="switchTab('goals')" class="tab-btn touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="false" data-tab="goals" id="tab-btn-goals">
+          <i class="fa-solid fa-tablet-screen-button icon-align-nudge text-amber-400"></i> Metas
+        </button>
+        <button onclick="switchTab('weekly')" class="tab-btn touch-target px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-xl text-xs font-semibold tracking-wide flex items-center text-slate-300 hover:text-white" role="tab" aria-selected="false" data-tab="weekly" id="tab-btn-weekly">
+          <i class="fa-solid fa-calendar-check icon-align-nudge text-teal-400"></i> Bitácora
+        </button>
+      </nav>
+
+      <!-- Action Group -->
+      <div class="flex items-center gap-2">
+        <button onclick="openModal('quickPayModal')" class="btn-tactile touch-target bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-lg shadow-emerald-500/25 flex items-center gap-2" aria-label="Registrar abono o pago">
+          <i class="fa-solid fa-plus text-slate-950"></i>
+          <span class="hidden sm:inline tracking-wide">Movimiento</span>
+        </button>
+        <button onclick="openSettingsModal()" class="btn-tactile touch-target w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center text-slate-400 hover:text-white bg-slate-900 border border-slate-800 rounded-xl hover:border-slate-700" aria-label="Abrir configuración y respaldos">
+          <i class="fa-solid fa-gear text-sm sm:text-base"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container (Fluid Container Pattern with safe clearance for mobile dock) -->
+  <main class="container-fluid py-4 sm:py-8 space-y-5 sm:space-y-8 pb-28 md:pb-12">
+    
+    <!-- Hero Strategic Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950/40 border border-slate-800/80 p-4 sm:p-7 shadow-2xl">
+      <div class="ambient-glow absolute -right-16 -top-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="ambient-glow absolute -left-16 -bottom-16 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6">
+        <div class="space-y-2.5 sm:space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-bold tracking-wide">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            Simulación Reactiva al Instante
+          </div>
+          <h2 class="font-heading text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight" id="heroRoadmapDebtTitle">
+            Ruta Dinámica: <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">Calculando...</span>
+          </h2>
+          <p class="text-slate-300 text-xs sm:text-sm leading-relaxed" id="heroRoadmapDesc">
+            Cada vez que ajustas tu sueldo o tus gastos de renta, transporte y comida, toda la hoja de ruta y los hitos de compra se recalculan automáticamente con precisión matemática.
+          </p>
+          <div class="pt-1 grid grid-cols-2 sm:flex sm:flex-row gap-2">
+            <button onclick="switchTab('budget')" class="btn-tactile touch-target px-3.5 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-sliders text-cyan-400"></i>
+              <span class="truncate">Ajustar Sueldo</span>
+            </button>
+            <button onclick="switchTab('roadmap')" class="btn-tactile touch-target px-3.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/40 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-route text-indigo-400"></i>
+              <span class="truncate">Ver Ruta</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metrics Triple Badge (Responsive Grid) -->
+        <div class="grid grid-cols-3 gap-2 w-full lg:w-auto">
+          <div class="apex-card p-2 sm:p-4 rounded-xl text-center min-w-0">
+            <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold tracking-wider block truncate">Sueldo</span>
+            <div class="font-numeral text-base sm:text-2xl font-black text-emerald-400 mt-0.5 truncate" id="heroIncomeDisplay">$3,599</div>
+            <span class="text-[9px] sm:text-[11px] text-slate-400 font-medium block mt-0.5">/ semana</span>
+          </div>
+
+          <div class="apex-card p-2 sm:p-4 rounded-xl text-center min-w-0">
+            <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold tracking-wider block truncate">Gastos</span>
+            <div class="font-numeral text-base sm:text-2xl font-black text-rose-400 mt-0.5 truncate" id="heroExpensesDisplay">$1,900</div>
+            <span class="text-[9px] sm:text-[11px] text-rose-300/80 font-medium block mt-0.5">Renta+Vida</span>
+          </div>
+
+          <div class="apex-card p-2 sm:p-4 rounded-xl text-center min-w-0">
+            <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold tracking-wider block truncate">Libre</span>
+            <div class="font-numeral text-base sm:text-2xl font-black text-teal-300 mt-0.5 truncate" id="heroAvailableWeekly">$1,699</div>
+            <span class="text-[9px] sm:text-[11px] text-teal-400 font-medium block mt-0.5">Ahorro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: RESUMEN DASHBOARD -->
+    <section id="tab-dashboard" class="tab-content active enter-materialize space-y-6 sm:space-y-8" role="tabpanel" aria-labelledby="tab-btn-dashboard">
+      
+      <!-- 4 KPI Cards Grid (Mobile 2 cols, Desktop 4 cols) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        
+        <!-- KPI 1 -->
+        <div class="apex-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Sueldo Base</span>
+            <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs sm:text-base flex-shrink-0">
+              <i class="fa-solid fa-money-bill-trend-up"></i>
+            </div>
+          </div>
+          <div class="mt-2 sm:mt-4">
+            <div class="font-numeral text-xl sm:text-3xl font-black text-white truncate" id="kpiIncome">$3,599</div>
+            <span class="text-[10px] sm:text-xs text-slate-400 block truncate">Semanal activo</span>
+          </div>
+          <div class="mt-2 sm:mt-3 flex items-center justify-between text-[10px] sm:text-xs text-slate-400 border-t border-slate-800/80 pt-1.5 sm:pt-2.5">
+            <span class="hidden sm:inline">Mensual:</span>
+            <span class="sm:hidden">Mes:</span>
+            <span class="font-numeral font-bold text-emerald-400" id="kpiIncomeMonthly">$15,583</span>
+          </div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="apex-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Gastos Totales</span>
+            <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs sm:text-base flex-shrink-0">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+          </div>
+          <div class="mt-2 sm:mt-4">
+            <div class="font-numeral text-xl sm:text-3xl font-black text-white truncate" id="kpiTotalExpenses">$1,900</div>
+            <span class="text-[10px] sm:text-xs text-slate-400 block truncate">Renta + Vida</span>
+          </div>
+          <div class="mt-2 sm:mt-3 flex items-center justify-between text-[10px] sm:text-xs text-slate-400 border-t border-slate-800/80 pt-1.5 sm:pt-2.5">
+            <span class="hidden sm:inline">Renta sem:</span>
+            <span class="sm:hidden">Renta:</span>
+            <span class="font-numeral font-bold text-rose-400" id="kpiRentWeekly">$500</span>
+          </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="apex-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Flujo Libre</span>
+            <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-teal-500/10 text-teal-300 flex items-center justify-center text-xs sm:text-base flex-shrink-0">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+          </div>
+          <div class="mt-2 sm:mt-4">
+            <div class="font-numeral text-xl sm:text-3xl font-black text-teal-300 truncate" id="kpiFreeFlow">$1,699</div>
+            <span class="text-[10px] sm:text-xs text-slate-400 block truncate">Para deudas & metas</span>
+          </div>
+          <div class="mt-2 sm:mt-3 flex items-center justify-between text-[10px] sm:text-xs text-slate-400 border-t border-slate-800/80 pt-1.5 sm:pt-2.5">
+            <span class="hidden sm:inline">Tasa ahorro:</span>
+            <span class="sm:hidden">Ahorro:</span>
+            <span class="font-numeral font-bold text-teal-300" id="kpiSavingsRate">47%</span>
+          </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="apex-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Por Liquidar</span>
+            <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xs sm:text-base flex-shrink-0">
+              <i class="fa-solid fa-fire-flame-curved"></i>
+            </div>
+          </div>
+          <div class="mt-2 sm:mt-4">
+            <div class="font-numeral text-xl sm:text-3xl font-black text-rose-400 truncate" id="kpiDebt">$4,600</div>
+            <span class="text-[10px] sm:text-xs text-slate-400 block truncate" id="kpiDebtCount">3 compromisos</span>
+          </div>
+          <div class="mt-2 sm:mt-3 flex items-center justify-between text-[10px] sm:text-xs text-slate-400 border-t border-slate-800/80 pt-1.5 sm:pt-2.5">
+            <span class="hidden sm:inline">Progreso:</span>
+            <span class="sm:hidden">Prog:</span>
+            <span class="font-bold text-rose-400" id="kpiDebtProgress">0% pagado</span>
+          </div>
+        </div>
+
+      </div>
+            <div class="font-numeral text-3xl font-black text-amber-300" id="kpiSavings">$0</div>
+            <span class="text-xs text-slate-400">Meta: $30,000 MXN</span>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80 pt-2.5">
+            <span>Objetivo:</span>
+            <span class="font-bold text-amber-300">2 Tablets + 1 Celular</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main Dual Progress Bar -->
+      <div class="apex-card rounded-3xl p-5 sm:p-7 space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-heading text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-bars-progress text-emerald-400"></i>
+              Progreso General de tu Libertad Financiera
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Fase 1: Exterminar deudas &bull; Fase 2: Comprar dispositivos de contado</p>
+          </div>
+          <div class="text-left sm:text-right">
+            <span class="font-numeral text-2xl sm:text-3xl font-black text-emerald-400" id="overallPercentage">0%</span>
+            <span class="font-numeral text-xs text-slate-400 block" id="overallTotalProgress">$0 / $34,600</span>
+          </div>
+        </div>
+
+        <!-- Multi-segment progress bar with smooth transition -->
+        <div class="relative w-full h-4 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800 flex" role="progressbar" aria-label="Progreso general">
+          <div id="barDebtPaid" class="progress-bar-animated h-full bg-gradient-to-r from-rose-500 to-emerald-400 rounded-l-full" style="width: 0%"></div>
+          <div id="barGadgetSaved" class="progress-bar-animated h-full bg-gradient-to-r from-amber-500 via-emerald-400 to-cyan-400" style="width: 0%"></div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-1 gap-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+            <span>Fase 1: Deudas ($4,600)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+            <span>Fase 2: Gadgets ($30,000)</span>
+          </div>
+          <div class="flex items-center gap-2 font-bold text-emerald-400">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <span id="estimatedFinishDate">Meta estimada: Calculando...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Columns: Deudas vs Metas Snapshot -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Snapshot Deudas -->
+        <div class="apex-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                  <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-white text-base">Tus Deudas Activas</h4>
+                  <p class="text-xs text-slate-400">Ordenadas de menor a mayor (Método Bola de Nieve)</p>
+                </div>
+              </div>
+              <button onclick="switchTab('debts')" class="btn-tactile text-xs text-emerald-400 hover:text-emerald-300 font-bold">Ver todas &rarr;</button>
+            </div>
+
+            <div class="space-y-3" id="dashboardDebtsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-xs text-slate-400 font-medium">Deuda por liquidar:</span>
+            <span class="font-numeral text-xl font-black text-rose-400" id="dashDebtTotal">$4,600</span>
+          </div>
+        </div>
+
+        <!-- Snapshot Metas de Gadgets -->
+        <div class="apex-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                  <i class="fa-solid fa-gift"></i>
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-white text-base">Metas: 2 Tablets + 1 Teléfono</h4>
+                  <p class="text-xs text-slate-400">Presupuesto de $10,000 cada uno ($30,000)</p>
+                </div>
+              </div>
+              <button onclick="switchTab('goals')" class="btn-tactile text-xs text-amber-400 hover:text-amber-300 font-bold">Ver metas &rarr;</button>
+            </div>
+
+            <div class="space-y-3" id="dashboardGoalsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-xs text-slate-400 font-medium">Faltante para los 3 dispositivos:</span>
+            <span class="font-numeral text-xl font-black text-amber-400" id="dashGoalsRemaining">$30,000</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Charts Section (Responsive Stack) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Dynamic Categories Doughnut Chart -->
+        <div class="lg:col-span-1 apex-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-heading text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-emerald-400"></i> Distribución de Gastos
+              </h4>
+              <button onclick="switchTab('budget')" class="text-[11px] text-cyan-400 hover:text-cyan-300 font-bold">Editar &rarr;</button>
+            </div>
+            <div class="relative h-56">
+              <canvas id="budgetDoughnutChart"></canvas>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 text-xs text-slate-400 text-center" id="dashboardCategoriesLegend">
+            <!-- Dynamic Category Mini Legend -->
+          </div>
+        </div>
+
+        <!-- Trajectory Chart -->
+        <div class="lg:col-span-2 apex-card rounded-3xl p-5 sm:p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
+            <h4 class="font-heading text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-cyan-400"></i> Trayectoria a 22 Semanas (Deuda vs Gadgets)
+            </h4>
+            <span class="text-[11px] bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700">Deuda $0 &bull; $30,000 Ahorrados</span>
+          </div>
+          <div class="relative h-56 sm:h-64">
+            <canvas id="growthLineChart"></canvas>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 text-center">
+            Calculado con tu flujo libre configurado. Si modificas tu sueldo o gastos, esta curva se actualiza instantáneamente.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: MI SUELDO & GASTOS -->
+    <section id="tab-budget" class="tab-content hidden enter-materialize space-y-8" role="tabpanel" aria-labelledby="tab-btn-budget">
+      
+      <!-- Sueldo Configurator Card -->
+      <div class="apex-card rounded-3xl p-5 sm:p-8 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 text-xs font-bold mb-2">
+              <i class="fa-solid fa-calculator"></i> Ajuste Granular de Ingresos
+            </div>
+            <h3 class="font-heading text-2xl sm:text-3xl font-extrabold text-white">Configura tu Sueldo Semanal</h3>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+              ¿Esta semana ganaste diferente por horas extras, bonos o descuentos? Cambia la cantidad aquí y todo el sistema se reajustará al momento.
+            </p>
+          </div>
+
+          <!-- Quick presets -->
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+            <button onclick="setQuickIncome(3599)" class="btn-tactile touch-target px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition text-center truncate">
+              Base ($3,599)
+            </button>
+            <button onclick="setQuickIncome(3600)" class="btn-tactile touch-target px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition text-center truncate">
+              $3,600
+            </button>
+            <button onclick="setQuickIncome(4000)" class="btn-tactile touch-target px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition text-center truncate">
+              + Bonos ($4,000)
+            </button>
+            <button onclick="setQuickIncome(4500)" class="btn-tactile touch-target px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition text-center truncate">
+              + Extras ($4,500)
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-slate-900/90 p-5 sm:p-6 rounded-2xl border border-slate-800">
+          <div class="space-y-1.5 md:col-span-2">
+            <label for="weeklyIncomeInput" class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+              Sueldo Neto Semanal ($ MXN)
+            </label>
+            <div class="relative max-w-md">
+              <span class="absolute left-4 top-3 text-emerald-400 font-mono font-bold text-lg">$</span>
+              <input type="number" id="weeklyIncomeInput" min="500" step="10" value="3599" 
+                     class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-4 py-3 text-xl font-black font-numeral text-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition"
+                     oninput="handleIncomeChange(this.value)">
+            </div>
+            <p class="text-[11px] text-slate-400">Equivale a <strong class="text-emerald-300 font-numeral" id="monthlyEquivDisplay">$15,583 MXN</strong> al mes en promedio (4.33 semanas).</p>
+          </div>
+
+          <div class="apex-card p-4 rounded-xl text-center border-slate-800">
+            <span class="text-xs text-slate-400 uppercase font-bold">Flujo Libre Calculado</span>
+            <div class="font-numeral text-3xl font-black text-teal-300 mt-1" id="budgetTabAvailable">$1,699</div>
+            <span class="text-[11px] text-teal-400 font-semibold block mt-0.5">Sueldo menos todos tus gastos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Breakdown Section -->
+      <div class="apex-card rounded-3xl p-5 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="font-heading text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
+              <i class="fa-solid fa-list-check text-cyan-400"></i> Desglose Detallado de Gastos Semanales
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+              Edita el monto exacto de lo que gastas en cada rubro. Agrega nuevas categorías personalizadas cuando lo necesites.
+            </p>
+          </div>
+          <button onclick="openModal('addCategoryModal')" class="btn-tactile touch-target bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-cyan-600/25 flex items-center gap-2">
+            <i class="fa-solid fa-plus text-slate-950"></i> Agregar Nueva Categoría
+          </button>
+        </div>
+
+        <!-- Dynamic Category Cards Grid (Responsive Grid) -->
+        <div class="responsive-grid-cards" id="budgetCategoryCardsContainer">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Budget Live Balance Bar -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col lg:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg flex-shrink-0">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-white uppercase tracking-wider block" id="budgetStatusTitle">Diagnóstico Presupuestal Óptimo</span>
+              <p class="text-xs text-slate-400" id="budgetStatusDesc">Tus gastos están completamente cubiertos y tienes suficiente flujo para pagar deudas y ahorrar.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 border-slate-800 pt-3 lg:pt-0">
+            <div class="text-left lg:text-right">
+              <span class="text-[11px] text-slate-400 uppercase font-bold block">Gastos Semanales</span>
+              <span class="font-numeral text-xl font-black text-rose-400" id="budgetTotalExpensesDisplay">$1,900</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-slate-400 uppercase font-bold block">Flujo Libre para Metas</span>
+              <span class="font-numeral text-xl font-black text-emerald-400" id="budgetSurplusDisplay">$1,699</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 3: HOJA DE RUTA DINÁMICA -->
+    <section id="tab-roadmap" class="tab-content hidden enter-materialize space-y-6" role="tabpanel" aria-labelledby="tab-btn-roadmap">
+      
+      <div class="apex-card rounded-3xl p-5 sm:p-8">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 text-xs font-bold mb-3">
+            <i class="fa-solid fa-compass"></i> Hoja de Ruta Viva & Recalculada
+          </div>
+          <h3 class="font-heading text-2xl sm:text-3xl font-extrabold text-white">Cronograma Estratégico en Tiempo Real</h3>
+          <p class="text-slate-300 text-sm sm:text-base mt-2 leading-relaxed">
+            Esta hoja de ruta no es estática: <strong>calcula dinámicamente cada semana</strong> según tu sueldo real y tus gastos configurados. Si aumentas tu ahorro o recortas gastos, los hitos de compra se adelantan automáticamente.
+          </p>
+        </div>
+
+        <!-- Dynamic 3 Master Phases Cards (Responsive Grid) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6" id="roadmapPhaseCardsContainer">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Timeline Detailed Table (Enhanced Responsive Layout) -->
+      <div class="apex-card rounded-3xl p-5 sm:p-7 space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h4 class="font-heading text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-calendar-check text-emerald-400"></i> Desglose Detallado Semana por Semana
+            </h4>
+            <p class="text-xs text-slate-400 mt-0.5">Mostrando la proyección exacta con tu flujo libre configurado.</p>
+          </div>
+
+          <!-- Filter / View Mode Toggle -->
+          <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-auto justify-between sm:justify-start">
+            <button onclick="setRoadmapViewMode('milestones')" id="btnRoadmapMilestones" class="btn-tactile touch-target flex-1 sm:flex-initial px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-cyan-300 border border-slate-700">
+              <i class="fa-solid fa-flag mr-1 text-[10px]"></i> Hitos Clave
+            </button>
+            <button onclick="setRoadmapViewMode('all')" id="btnRoadmapAll" class="btn-tactile touch-target flex-1 sm:flex-initial px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white">
+              <i class="fa-solid fa-list-ol mr-1 text-[10px]"></i> Todas las Semanas
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Scroll Indicator Note -->
+        <div class="sm:hidden flex items-center justify-center gap-1.5 text-[11px] text-slate-400 py-1">
+          <i class="fa-solid fa-arrows-left-right text-cyan-400"></i> Desliza horizontalmente la tabla
+        </div>
+
+        <!-- Responsive Table Wrapper with Sticky First Column -->
+        <div class="table-responsive-wrapper border border-slate-800/80">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-900/95 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5 sticky-col-mobile">Semana</th>
+                <th class="p-3.5 whitespace-nowrap">Sueldo</th>
+                <th class="p-3.5 whitespace-nowrap">Apartado Renta</th>
+                <th class="p-3.5 whitespace-nowrap">Otros Gastos</th>
+                <th class="p-3.5 whitespace-nowrap">Flujo Libre</th>
+                <th class="p-3.5 min-w-[240px]">Destino del Dinero</th>
+                <th class="p-3.5 whitespace-nowrap">Hito / Estado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80 text-slate-300 font-medium" id="roadmapTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 4: DEUDAS -->
+    <section id="tab-debts" class="tab-content hidden enter-materialize space-y-6" role="tabpanel" aria-labelledby="tab-btn-debts">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 apex-card rounded-3xl p-5 sm:p-7">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-bold mb-2">
+            <i class="fa-solid fa-shield-halved"></i> Estrategia Bola de Nieve
+          </div>
+          <h3 class="font-heading text-2xl font-extrabold text-white">Liquidación Acelerada de Deudas</h3>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Total inicial: <strong>$4,600 MXN</strong>. Pagar las deudas pequeñas primero genera alivio psicológico inmediato y libera flujo en tus primeros días.
+          </p>
+        </div>
+        <button onclick="openModal('addDebtModal')" class="btn-tactile touch-target w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus text-rose-400"></i> Agregar Otra Deuda
+        </button>
+      </div>
+
+      <!-- Debt Cards Grid (Responsive Grid) -->
+      <div class="responsive-grid-cards" id="debtsContainer">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+    </section>
+
+    <!-- TAB 5: METAS DE COMPRA -->
+    <section id="tab-goals" class="tab-content hidden enter-materialize space-y-6" role="tabpanel" aria-labelledby="tab-btn-goals">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 apex-card rounded-3xl p-5 sm:p-7">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-bold mb-2">
+            <i class="fa-solid fa-laptop-code"></i> Tu Equipo de Alta Gama
+          </div>
+          <h3 class="font-heading text-2xl font-extrabold text-white">2 Tablets + 1 Teléfono ($10,000 c/u)</h3>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Meta total: <strong>$30,000 MXN</strong>. Comprar de contado te ahorra entre un 40% y 80% en sobreprecios de tiendas departamentales con pagos chiquitos.
+          </p>
+        </div>
+        <button onclick="openModal('addSavingsModal')" class="btn-tactile touch-target w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-piggy-bank"></i> Asignar Ahorro a Meta
+        </button>
+      </div>
+
+      <!-- Goals Cards Grid (Responsive Grid) -->
+      <div class="responsive-grid-cards" id="goalsContainer">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Buying Guide (Responsive Stack) -->
+      <div class="apex-card rounded-3xl p-5 sm:p-7 space-y-4">
+        <h4 class="font-heading text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-tags text-amber-400"></i> Recomendaciones de Compra Inteligente ($10,000 por equipo)
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-300">
+          <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <span class="font-bold text-white text-sm block flex items-center gap-2">
+              <i class="fa-solid fa-mobile-screen-button text-amber-400"></i> Teléfono Móvil (~$10,000)
+            </span>
+            <p>Opciones de contado excelentes: Samsung Galaxy S23 FE, Xiaomi 13T, Motorola Edge 50 Pro, o iPhone reacondicionado Grado A. De contado conservas la garantía completa sin intereses.</p>
+          </div>
+          <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <span class="font-bold text-white text-sm block flex items-center gap-2">
+              <i class="fa-solid fa-tablet-screen-button text-amber-400"></i> Tablet 1: Trabajo (~$10,000)
+            </span>
+            <p>Modelos estrella: iPad 10ma Generación o Samsung Galaxy Tab S9 FE (con lápiz óptico S-Pen incluido). Ideal para lectura de PDFs, hojas de cálculo y productividad profesional.</p>
+          </div>
+          <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-2">
+            <span class="font-bold text-white text-sm block flex items-center gap-2">
+              <i class="fa-solid fa-tablet text-amber-400"></i> Tablet 2: Personal (~$10,000)
+            </span>
+            <p>Segunda tablet para entretenimiento, viajes o familia. Con dinero en mano puedes aprovechar temporadas de promociones como Buen Fin, Prime Day o Hot Sale con descuentos adicionales del 10% al 20%.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 6: BITÁCORA SEMANAL -->
+    <section id="tab-weekly" class="tab-content hidden enter-materialize space-y-6" role="tabpanel" aria-labelledby="tab-btn-weekly">
+      
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 apex-card rounded-3xl p-5 sm:p-7">
+        <div>
+          <h3 class="font-heading text-2xl font-extrabold text-white">Bitácora Semanal de Cobros y Gastos</h3>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Cada vez que cobres tu sueldo, registra aquí la distribución exacta para mantener el control de tus finanzas en el mundo real.
+          </p>
+        </div>
+        <button onclick="openModal('addWeekRecordModal')" class="btn-tactile touch-target w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus"></i> Registrar Cobro Semanal
+        </button>
+      </div>
+
+      <!-- Weekly Log Table -->
+      <div class="apex-card rounded-3xl p-5 sm:p-7">
+        <div class="table-responsive-wrapper border border-slate-800/80">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-900/95 text-slate-400 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5 sticky-col-mobile">Semana / Fecha</th>
+                <th class="p-3.5 whitespace-nowrap">Sueldo Recibido</th>
+                <th class="p-3.5 whitespace-nowrap">Apartado Renta</th>
+                <th class="p-3.5 whitespace-nowrap">Comida & Pasajes</th>
+                <th class="p-3.5 whitespace-nowrap">Abono a Deudas</th>
+                <th class="p-3.5 whitespace-nowrap">Abono a Metas</th>
+                <th class="p-3.5">Acción</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80 text-slate-300 font-medium" id="weeklyRecordsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODALS SECTION (Responsive & Animated) -->
+
+  <!-- Modal: Agregar Nueva Categoría de Gasto -->
+  <div id="addCategoryModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="addCatTitle" onclick="handleBackdropClick(event, 'addCategoryModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="addCatTitle" class="font-heading font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-tags text-cyan-400"></i> Nueva Categoría de Gasto
+        </h3>
+        <button onclick="closeModal('addCategoryModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="addCategoryForm" onsubmit="handleAddCategory(event)" class="space-y-4">
+        <div>
+          <label for="newCategoryName" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Nombre de la Categoría</label>
+          <input type="text" id="newCategoryName" required placeholder="Ej. Gimnasio, Mascotas, Medicina" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label for="newCategoryAmount" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Monto Semanal Asignado ($ MXN)</label>
+          <input type="number" id="newCategoryAmount" min="0" step="any" required placeholder="250" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="newCategoryIcon" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Icono</label>
+            <select id="newCategoryIcon" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-cyan-500 focus:outline-none">
+              <option value="fa-heart-pulse">Salud / Medicina</option>
+              <option value="fa-dumbbell">Gimnasio / Deporte</option>
+              <option value="fa-paw">Mascotas</option>
+              <option value="fa-shirt">Ropa / Calzado</option>
+              <option value="fa-gamepad">Ocio / Videojuegos</option>
+              <option value="fa-graduation-cap">Cursos / Estudio</option>
+              <option value="fa-receipt">Otro Compromiso</option>
+            </select>
+          </div>
+          <div>
+            <label for="newCategoryColor" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Color Distintivo</label>
+            <select id="newCategoryColor" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-cyan-500 focus:outline-none">
+              <option value="#ec4899">Rosa Neon</option>
+              <option value="#8b5cf6">Violeta / Morado</option>
+              <option value="#f97316">Naranja Cálido</option>
+              <option value="#14b8a6">Verde Azulado</option>
+              <option value="#eab308">Amarillo Oro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('addCategoryModal')" class="btn-tactile touch-target flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+          <button type="submit" class="btn-tactile touch-target flex-1 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-600/25">Guardar Categoría</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Registrar Abono o Pago -->
+  <div id="quickPayModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="quickPayTitle" onclick="handleBackdropClick(event, 'quickPayModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="quickPayTitle" class="font-heading font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-emerald-400"></i> Registrar Abono o Pago
+        </h3>
+        <button onclick="closeModal('quickPayModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="quickPayForm" onsubmit="handleQuickPay(event)" class="space-y-4">
+        <div>
+          <label for="quickPayType" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Tipo de Destino</label>
+          <select id="quickPayType" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none" onchange="toggleQuickPayDestinations()">
+            <option value="debt">Abonar a Deuda (Exterminio de Deudas)</option>
+            <option value="goal">Abonar a Meta (Tablets / Teléfono)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="quickPayDestination" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Seleccionar Cuenta / Meta</label>
+          <select id="quickPayDestination" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label for="quickPayAmount" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Monto a Abonar (MXN)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3 text-slate-400 text-sm font-mono">$</span>
+            <input type="number" id="quickPayAmount" min="1" step="any" required placeholder="600" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-8 pr-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label for="quickPayNote" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Nota u Origen (Opcional)</label>
+          <input type="text" id="quickPayNote" placeholder="Ej. Cobro de semana puntual" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('quickPayModal')" class="btn-tactile touch-target flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+          <button type="submit" class="btn-tactile touch-target flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/25">Confirmar Abono</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar Deuda Nueva -->
+  <div id="addDebtModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="addDebtTitle" onclick="handleBackdropClick(event, 'addDebtModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="addDebtTitle" class="font-heading font-bold text-white text-lg">Agregar Deuda</h3>
+        <button onclick="closeModal('addDebtModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="addDebtForm" onsubmit="handleAddDebt(event)" class="space-y-4">
+        <div>
+          <label for="newDebtName" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Nombre o Acreedor</label>
+          <input type="text" id="newDebtName" required placeholder="Ej. Tarjeta, Préstamo conocido" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label for="newDebtAmount" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Monto Total (MXN)</label>
+          <input type="number" id="newDebtAmount" min="1" step="any" required placeholder="1500" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('addDebtModal')" class="btn-tactile touch-target flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+          <button type="submit" class="btn-tactile touch-target flex-1 bg-rose-600 hover:bg-rose-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition shadow-lg shadow-rose-600/25">Guardar Deuda</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Asignar Ahorro a Metas -->
+  <div id="addSavingsModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="addSavingsTitle" onclick="handleBackdropClick(event, 'addSavingsModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="addSavingsTitle" class="font-heading font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-piggy-bank text-amber-400"></i> Asignar Ahorro a Dispositivo
+        </h3>
+        <button onclick="closeModal('addSavingsModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="addSavingsForm" onsubmit="handleAddGoalSavings(event)" class="space-y-4">
+        <div>
+          <label for="goalDestinationSelect" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Seleccionar Dispositivo</label>
+          <select id="goalDestinationSelect" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label for="goalSavingsAmount" class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Monto a Asignar (MXN)</label>
+          <input type="number" id="goalSavingsAmount" min="1" step="any" required placeholder="1700" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('addSavingsModal')" class="btn-tactile touch-target flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+          <button type="submit" class="btn-tactile touch-target flex-1 bg-amber-600 hover:bg-amber-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition shadow-lg shadow-amber-600/25">Asignar Ahorro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Registrar Cobro Semanal -->
+  <div id="addWeekRecordModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="addWeekTitle" onclick="handleBackdropClick(event, 'addWeekRecordModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="addWeekTitle" class="font-heading font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-calendar-plus text-emerald-400"></i> Registrar Cobro Semanal Real
+        </h3>
+        <button onclick="closeModal('addWeekRecordModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="addWeekRecordForm" onsubmit="handleAddWeeklyRecord(event)" class="space-y-4">
+        <div>
+          <label for="weekLabel" class="block text-xs font-bold text-slate-300 uppercase mb-1">Semana # o Etiqueta</label>
+          <input type="text" id="weekLabel" required placeholder="Ej. Semana 2 - Con horas extras" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="weekSalary" class="block text-xs font-bold text-slate-300 uppercase mb-1">Sueldo Recibido</label>
+            <input type="number" id="weekSalary" value="3599" required class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none" oninput="calculateWeekModalTotals()">
+          </div>
+          <div>
+            <label for="weekRent" class="block text-xs font-bold text-slate-300 uppercase mb-1">Apartado Renta</label>
+            <input type="number" id="weekRent" value="500" required class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none" oninput="calculateWeekModalTotals()">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="weekLiving" class="block text-xs font-bold text-slate-300 uppercase mb-1">Comida & Pasajes</label>
+            <input type="number" id="weekLiving" value="1400" required class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none" oninput="calculateWeekModalTotals()">
+          </div>
+          <div>
+            <label for="weekDebtPay" class="block text-xs font-bold text-slate-300 uppercase mb-1">Abono a Deudas</label>
+            <input type="number" id="weekDebtPay" value="1600" required class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none" oninput="calculateWeekModalTotals()">
+          </div>
+        </div>
+
+        <div>
+          <label for="weekGoalSavings" class="block text-xs font-bold text-slate-300 uppercase mb-1">Abono a Metas (Tablets/Teléfono)</label>
+          <input type="number" id="weekGoalSavings" value="99" required class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none" oninput="calculateWeekModalTotals()">
+        </div>
+
+        <!-- Calculated leftover check -->
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs font-medium">
+          <span class="text-slate-400">Balance del Registro:</span>
+          <span class="font-numeral font-bold text-emerald-400" id="weekModalBalanceText">Exacto ($0 diferencia)</span>
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeModal('addWeekRecordModal')" class="btn-tactile touch-target flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+          <button type="submit" class="btn-tactile touch-target flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/25">Guardar en Bitácora</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Configuración y Respaldos -->
+  <div id="settingsModal" class="modal-backdrop hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="handleBackdropClick(event, 'settingsModal')">
+    <div class="modal-content-animate bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="settingsTitle" class="font-heading font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-gear text-slate-400"></i> Respaldos y Configuración
+        </h3>
+        <button onclick="closeModal('settingsModal')" class="touch-target w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-xl" aria-label="Cerrar modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm text-slate-300">
+        <p>Tus finanzas se guardan automáticamente en tu almacenamiento local. Puedes descargar una copia de seguridad o restaurarla en cualquier momento:</p>
+
+        <div class="space-y-2.5">
+          <button onclick="exportDataJSON()" class="btn-tactile touch-target w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-download text-emerald-400"></i> Descargar Respaldo (JSON)
+          </button>
+          
+          <label class="btn-tactile touch-target w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer">
+            <i class="fa-solid fa-upload text-cyan-400"></i> Importar Respaldo (JSON)
+            <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importDataJSON(event)" aria-label="Importar archivo JSON">
+          </label>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800/80">
+          <button onclick="resetToInitialState()" class="btn-tactile touch-target w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold py-2.5 rounded-xl transition text-xs">
+            Restablecer al Plan Original ($3,599/sem, 3 deudas, 3 gadgets)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Mobile Bottom App Dock (< 768px) -->
+  <nav class="mobile-bottom-dock" role="tablist" aria-label="Navegación móvil inferior">
+    <button onclick="switchTab('dashboard')" class="tab-btn active mobile-dock-btn" data-tab="dashboard" role="tab" aria-selected="true" id="mobile-tab-dashboard">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-chart-pie text-emerald-400"></i>
+      </div>
+      <span class="dock-label">Resumen</span>
+    </button>
+    <button onclick="switchTab('budget')" class="tab-btn mobile-dock-btn" data-tab="budget" role="tab" aria-selected="false" id="mobile-tab-budget">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-sliders text-cyan-400"></i>
+      </div>
+      <span class="dock-label">Sueldo</span>
+    </button>
+    <button onclick="switchTab('roadmap')" class="tab-btn mobile-dock-btn" data-tab="roadmap" role="tab" aria-selected="false" id="mobile-tab-roadmap">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-route text-indigo-400"></i>
+      </div>
+      <span class="dock-label">Ruta</span>
+    </button>
+    <button onclick="switchTab('debts')" class="tab-btn mobile-dock-btn" data-tab="debts" role="tab" aria-selected="false" id="mobile-tab-debts">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-fire-flame-curved text-rose-400"></i>
+      </div>
+      <span class="dock-label">Deudas</span>
+    </button>
+    <button onclick="switchTab('goals')" class="tab-btn mobile-dock-btn" data-tab="goals" role="tab" aria-selected="false" id="mobile-tab-goals">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-tablet-screen-button text-amber-400"></i>
+      </div>
+      <span class="dock-label">Metas</span>
+    </button>
+    <button onclick="switchTab('weekly')" class="tab-btn mobile-dock-btn" data-tab="weekly" role="tab" aria-selected="false" id="mobile-tab-weekly">
+      <div class="dock-icon-wrapper">
+        <i class="fa-solid fa-calendar-check text-teal-400"></i>
+      </div>
+      <span class="dock-label">Bitácora</span>
+    </button>
+  </nav>
+
+  <!-- Mobile Quick Action Floating Button (FAB) -->
+  <button onclick="openModal('quickPayModal')" class="fab-breathe md:hidden fixed z-40 w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-slate-950 font-black shadow-xl shadow-emerald-500/40 flex items-center justify-center btn-tactile border border-emerald-300/40" style="bottom: 74px; right: 14px;" aria-label="Registrar abono rápido">
+    <i class="fa-solid fa-plus text-base"></i>
+  </button>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none" aria-live="polite"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
