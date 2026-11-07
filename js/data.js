@@ -149,21 +149,32 @@ let appState = null;
  */
 function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('FINANZAS_PLAN_PRO_STATE_V1');
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       appState = JSON.parse(raw);
       // Auto-migrate if categories array is missing
-      if (!appState.config.categories || !Array.isArray(appState.config.categories)) {
+      if (!appState.config || !appState.config.categories || !Array.isArray(appState.config.categories)) {
+        if (!appState.config) appState.config = {};
         appState.config.categories = JSON.parse(JSON.stringify(DEFAULT_STATE.config.categories));
+        saveState();
       }
-      saveState();
     } else {
-      appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      const legacyRaw = localStorage.getItem('FINANZAS_PLAN_PRO_STATE_V1');
+      if (legacyRaw) {
+        appState = JSON.parse(legacyRaw);
+        if (!appState.config) appState.config = {};
+        if (!appState.config.categories || !Array.isArray(appState.config.categories)) {
+          appState.config.categories = JSON.parse(JSON.stringify(DEFAULT_STATE.config.categories));
+        }
+      } else {
+        appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
       saveState();
     }
   } catch (err) {
     console.error('Error loading state from localStorage:', err);
     appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    saveState();
   }
   return appState;
 }

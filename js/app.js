@@ -150,8 +150,8 @@ function renderKPIs() {
   animateNumberValue('kpiFreeFlow', weeklyAvailable);
 
   // Rent & Savings Rate KPIs for mobile 2x2 grid
-  const rentCat = (appState.config.categories || []).find(c => c.id === 'rent');
-  const rentAmt = rentCat ? rentCat.amount : 500;
+  const rentCat = (appState.config.categories || []).find(c => c.id === 'cat_rent' || c.id === 'rent');
+  const rentAmt = rentCat ? (parseFloat(rentCat.amount) || 0) : 500;
   animateNumberValue('kpiRentWeekly', rentAmt);
 
   const savingsRate = weeklyIncome > 0 ? Math.max(0, Math.min(100, Math.round((weeklyAvailable / weeklyIncome) * 100))) : 0;
@@ -270,6 +270,59 @@ function renderKPIs() {
 }
 
 /**
+ * Live updates all category percentage labels and progress bars without destroying focus
+ */
+function updateAllCategoryBarsAndPercentages() {
+  const weeklyIncome = parseFloat(appState.config.weeklyIncome) || 1;
+  const categories = appState.config.categories || [];
+
+  categories.forEach(cat => {
+    const amt = parseFloat(cat.amount) || 0;
+    const pct = Math.min(100, Math.round((amt / weeklyIncome) * 100));
+
+    // Live update percentage label
+    const pctLabel = document.getElementById(`cat_pct_${cat.id}`);
+    if (pctLabel) {
+      pctLabel.textContent = `${pct}% del sueldo`;
+    }
+
+    // Live update progress bar width
+    const bar = document.getElementById(`cat_bar_${cat.id}`);
+    if (bar) {
+      bar.style.width = `${pct}%`;
+    }
+  });
+
+  // Also update live budget status diagnostics
+  const totalExp = getTotalWeeklyExpenses();
+  const available = getWeeklyAvailableFlow();
+
+  const expDisplay = document.getElementById('budgetTotalExpensesDisplay');
+  if (expDisplay) expDisplay.textContent = formatMoney(totalExp);
+
+  const surplusDisplay = document.getElementById('budgetSurplusDisplay');
+  if (surplusDisplay) surplusDisplay.textContent = formatMoney(available);
+
+  const statusTitle = document.getElementById('budgetStatusTitle');
+  const statusDesc = document.getElementById('budgetStatusDesc');
+  if (statusTitle && statusDesc) {
+    if (available > 1000) {
+      statusTitle.textContent = 'Diagnóstico Presupuestal Excepcional';
+      statusTitle.className = 'text-xs font-bold text-emerald-400 uppercase tracking-wider block';
+      statusDesc.textContent = `Tienes ${formatMoney(available)} libres por semana. Puedes liquidar tus deudas rápidamente y comprar tus gadgets sin retrasos.`;
+    } else if (available > 0) {
+      statusTitle.textContent = 'Diagnóstico Presupuestal Equilibrado';
+      statusTitle.className = 'text-xs font-bold text-amber-400 uppercase tracking-wider block';
+      statusDesc.textContent = `Tienes ${formatMoney(available)} libres por semana. Cubres todo, pero el ahorro para gadgets tomará un poco más de tiempo.`;
+    } else {
+      statusTitle.textContent = 'Alerta: Presupuesto en Déficit';
+      statusTitle.className = 'text-xs font-bold text-rose-400 uppercase tracking-wider block';
+      statusDesc.textContent = `Tus gastos (${formatMoney(totalExp)}) superan o igualan tus ingresos (${formatMoney(weeklyIncome)}). Reduce categorías de gastos para liberar flujo.`;
+    }
+  }
+}
+
+/**
  * Render Granular Budget Categories in the "Mi Sueldo & Gastos" tab
  */
 function renderBudgetCategories() {
@@ -284,10 +337,10 @@ function renderBudgetCategories() {
     const pct = Math.min(100, Math.round((amt / weeklyIncome) * 100));
 
     return `
-      <div class="apex-card p-5 rounded-2xl flex flex-col justify-between space-y-4 border-slate-800/80 relative">
-        <div class="space-y-3">
+      <div class="apex-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between space-y-3 sm:space-y-4 border-slate-800/80 relative">
+        <div class="space-y-2.5 sm:space-y-3">
           <div class="flex items-center justify-between">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background-color: ${cat.color}20; color: ${cat.color};">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-base sm:text-lg" style="background-color: ${cat.color}20; color: ${cat.color};">
               <i class="fa-solid ${cat.icon}"></i>
             </div>
             ${!cat.isFixed ? `
@@ -300,15 +353,15 @@ function renderBudgetCategories() {
           </div>
 
           <div>
-            <h4 class="font-heading font-bold text-white text-base">${cat.name}</h4>
-            <p class="text-xs text-slate-400 mt-0.5">${cat.description || 'Gasto semanal recurrente'}</p>
+            <h4 class="font-heading font-bold text-white text-sm sm:text-base">${cat.name}</h4>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">${cat.description || 'Gasto semanal recurrente'}</p>
           </div>
         </div>
 
         <div class="space-y-2 pt-2 border-t border-slate-800/80">
           <div class="flex items-center justify-between text-xs">
             <label for="cat_input_${cat.id}" class="text-slate-400 font-medium">Asignación Semanal:</label>
-            <span class="font-numeral font-bold text-slate-300">${pct}% del sueldo</span>
+            <span class="font-numeral font-bold text-slate-300" id="cat_pct_${cat.id}">${pct}% del sueldo</span>
           </div>
 
           <div class="relative">
@@ -319,8 +372,8 @@ function renderBudgetCategories() {
                    aria-label="Monto para ${cat.name}">
           </div>
 
-          <div class="w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-300" style="width: ${pct}%; background-color: ${cat.color};"></div>
+          <div class="w-full bg-slate-800/80 rounded-full h-2 overflow-hidden">
+            <div id="cat_bar_${cat.id}" class="progress-bar-animated h-full rounded-full transition-all duration-300" style="width: ${pct}%; background-color: ${cat.color};"></div>
           </div>
         </div>
       </div>
@@ -332,15 +385,21 @@ function renderBudgetCategories() {
  * Handle Income modifications in real-time
  */
 function handleIncomeChange(newVal) {
-  const income = parseFloat(newVal) || 0;
+  const income = isNaN(parseFloat(newVal)) ? 0 : Math.max(0, parseFloat(newVal));
   appState.config.weeklyIncome = income;
   saveState();
+
+  // 1. Live update all category percentages & progress bars
+  updateAllCategoryBarsAndPercentages();
+
+  // 2. Live update KPIs & hero metrics
   renderKPIs();
-  renderBudgetCategories();
+
+  // 3. Live update chips & roadmap
   renderDashboardCategoriesLegend();
   renderRoadmap();
 
-  // Refresh charts
+  // 4. Live update charts
   if (budgetChartInstance) renderBudgetDoughnut();
   if (growthChartInstance) renderGrowthLineChart();
   if (monthlyChartInstance) renderMonthlyComparisonChart();
@@ -361,16 +420,23 @@ function setQuickIncome(amount) {
  * Update single category amount in real-time
  */
 function updateCategoryAmount(catId, newVal) {
-  const amt = parseFloat(newVal) || 0;
+  const amt = isNaN(parseFloat(newVal)) ? 0 : Math.max(0, parseFloat(newVal));
   const category = (appState.config.categories || []).find(c => c.id === catId);
   if (category) {
     category.amount = amt;
     saveState();
+
+    // 1. Live update this category and all other category bars & percentages
+    updateAllCategoryBarsAndPercentages();
+
+    // 2. Live update KPIs & hero metrics
     renderKPIs();
+
+    // 3. Live update chips & roadmap
     renderDashboardCategoriesLegend();
     renderRoadmap();
 
-    // Refresh charts
+    // 4. Live update charts
     if (budgetChartInstance) renderBudgetDoughnut();
     if (growthChartInstance) renderGrowthLineChart();
     if (monthlyChartInstance) renderMonthlyComparisonChart();
@@ -835,7 +901,7 @@ function renderDashboardDebts() {
             <span class="font-numeral text-xs font-extrabold ${isPaid ? 'text-emerald-400' : 'text-rose-400'}">${isPaid ? 'Liquidada' : formatMoney(remaining)}</span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div class="${isPaid ? 'bg-emerald-500' : 'bg-rose-500'} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            <div class="progress-bar-animated ${isPaid ? 'bg-emerald-500' : 'bg-rose-500'} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
           </div>
         </div>
         ${!isPaid ? `
@@ -873,7 +939,7 @@ function renderDashboardGoals() {
             <span class="font-numeral text-xs font-bold text-amber-300">${formatMoney(g.saved)} / ${formatMoney(g.target)}</span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-amber-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            <div class="progress-bar-animated bg-gradient-to-r from-amber-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
           </div>
         </div>
         <span class="font-numeral text-xs font-black ${isCompleted ? 'text-amber-400' : 'text-slate-400'} min-w-[38px] text-right">${pct}%</span>
@@ -922,7 +988,7 @@ function renderDebtsContainer() {
               <span class="font-numeral text-2xl font-black ${isPaid ? 'text-emerald-400' : 'text-rose-400'}">${formatMoney(remaining)}</span>
             </div>
             <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-800">
-              <div class="bg-gradient-to-r from-rose-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+              <div class="progress-bar-animated bg-gradient-to-r from-rose-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
             </div>
             <div class="flex justify-between text-[11px] text-slate-400 mt-1.5 font-medium">
               <span>Pagado: ${formatMoney(d.paid)}</span>
@@ -991,7 +1057,7 @@ function renderGoalsContainer() {
               <span class="font-numeral text-2xl font-black text-amber-300">${formatMoney(g.saved)}</span>
             </div>
             <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
-              <div class="bg-gradient-to-r from-amber-500 via-emerald-400 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+              <div class="progress-bar-animated bg-gradient-to-r from-amber-500 via-emerald-400 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
             </div>
             <div class="flex justify-between text-[11px] text-slate-400 font-medium">
               <span>Objetivo: ${formatMoney(g.target)}</span>
